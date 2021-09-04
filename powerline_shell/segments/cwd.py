@@ -65,15 +65,21 @@ def add_cwd_segment(powerline):
     if max_depth <= 0:
         warn("Ignoring cwd.max_depth option since it's not greater than 0")
     elif len(names) > max_depth:
-        # https://github.com/milkbikis/powerline-shell/issues/148
-        # n_before is the number is the number of directories to put before the
-        # ellipsis. So if you are at ~/a/b/c/d/e and max depth is 4, it will
-        # show `~ a ... d e`.
-        #
-        # max_depth must be greater than n_before or else you end up repeating
-        # parts of the path with the way the splicing is written below.
-        n_before = 2 if max_depth > 2 else max_depth - 1
-        names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
+        if powerline.segment_conf("cwd", "mode") == "prioritize_parent":
+            # Do not print first directory after home, print parent directory of current directory instead.
+            # So if you are at ~/a/b/c/d and the max depth is 3,the prompt will show `~ ... c d` instead of `~ a ... d`.
+            n_before = 1 if max_depth > 1 else max_depth - 1
+            names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
+        else:
+            # https://github.com/milkbikis/powerline-shell/issues/148
+            # n_before is the number is the number of directories to put before the
+            # ellipsis. So if you are at ~/a/b/c/d/e and max depth is 4, it will
+            # show `~ a ... d e`.
+            #
+            # max_depth must be greater than n_before or else you end up repeating
+            # parts of the path with the way the splicing is written below.
+            n_before = 2 if max_depth > 2 else max_depth - 1
+            names = names[:n_before] + [ELLIPSIS] + names[n_before - max_depth:]
 
     if powerline.segment_conf("cwd", "mode") == "dironly":
         # The user has indicated they only want the current directory to be
