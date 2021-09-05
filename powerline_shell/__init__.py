@@ -180,12 +180,18 @@ class CustomImporter(object):
             mod = importlib.import_module(module_prefix + module_or_file)
         except ImportError:
             try:
+                module_or_file = module_or_file.replace('~', os.path.expanduser('~'))
+
+                from .theme_scss import import_scss
+                if ('.scss' in module_or_file):
+                    module_or_file = import_scss(module_or_file)
+
                 module_name = "_custom_mod_{0}".format(self.file_import_count)
                 mod = import_file(module_name, os.path.expanduser(module_or_file))
                 self.file_import_count += 1
             except (ImportError, IOError):
                 msg = "{0} {1} cannot be found".format(description, module_or_file)
-                raise ModuleNotFoundException( msg)
+                raise ModuleNotFoundException(msg)
         return mod
 
 
