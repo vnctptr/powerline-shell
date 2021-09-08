@@ -182,9 +182,9 @@ class CustomImporter(object):
             try:
                 module_or_file = module_or_file.replace('~', os.path.expanduser('~'))
 
-                from .theme_scss import import_scss
+                from .theme_scss import scss_to_module
                 if ('.scss' in module_or_file):
-                    module_or_file = import_scss(module_or_file)
+                    module_or_file = scss_to_module(module_or_file)
 
                 module_name = "_custom_mod_{0}".format(self.file_import_count)
                 mod = import_file(module_name, os.path.expanduser(module_or_file))
