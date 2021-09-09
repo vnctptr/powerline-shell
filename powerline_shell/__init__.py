@@ -182,12 +182,13 @@ class CustomImporter(object):
             try:
                 module_or_file = module_or_file.replace('~', os.path.expanduser('~'))
 
-                from .theme_scss import scss_to_module
+                from .theme_scss import scss_to_python
                 if ('.scss' in module_or_file):
-                    module_or_file = scss_to_module(module_or_file)
+                    module_or_file = scss_to_python(module_or_file)
 
                 module_name = "_custom_mod_{0}".format(self.file_import_count)
                 mod = import_file(module_name, os.path.expanduser(module_or_file))
+                os.remove(module_or_file)
                 self.file_import_count += 1
             except (ImportError, IOError):
                 msg = "{0} {1} cannot be found".format(description, module_or_file)
@@ -204,10 +205,16 @@ def main():
                             choices=['bash', 'tcsh', 'zsh', 'bare'])
     arg_parser.add_argument('prev_error', nargs='?', type=int, default=0,
                             help='Error code returned by the last command')
+    arg_parser.add_argument('--convert-theme', type=argparse.FileType('r'))
     args = arg_parser.parse_args()
 
     if args.generate_config:
         print(json.dumps(DEFAULT_CONFIG, indent=2))
+        return 0
+
+    if args.convert_theme:
+        from .theme_scss import python_to_scss
+        python_to_scss(args.convert_theme.name)
         return 0
 
     config_path = find_config()

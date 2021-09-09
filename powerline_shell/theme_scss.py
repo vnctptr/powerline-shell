@@ -5,32 +5,33 @@ from .colortrans import rgb2short, RGB2SHORT_DICT
 def short2rgb (shortstring):
     return str((list(RGB2SHORT_DICT.keys())[list(RGB2SHORT_DICT.values()).index(int(shortstring))]))
 
-# TODO cleanup, use module
-# def module_to_scss(filename_python):
+def python_to_scss(filename_python):
+    file_python = open(filename_python, 'r')
+    filename_scss = filename_python.replace('.py', '-generated.scss')
+    file_scss = open(filename_scss, 'w')
 
-#     mod = importlib.import_module(module_prefix + module_or_file)
-#     file_python = open('./config/themes/soft-blue.py', 'r')
-#     file_scss = open("./config/themes/soft-blue.scss", "a")
+    content = ""
 
-#     for line in file_python.readlines():
-#         line = line.split(' ')
-#         if (line[0] == '\n'):
-#             new_line = ''
-#         elif(line[2].strip() == "-1"):
-#             new_line = line[0] + ": " + line[2].strip() + ";"
-#         elif line[2].strip() == 'True' or line[2].strip() == 'False':
-#             new_line = line[0] + ": " + line[2].strip() + ";" 
-#         else:
-#             new_line = line[0] + ": rgb" + short2rgb(line[2].strip())+ ";"
-#         file_scss.write(new_line)
+    for line in file_python.readlines():
+        line = line.strip().split(' ')
+        if line[0] == '':
+            content += '\n'
+        elif len(line) > 2:
+            variable = '$' + line[0]
+            value = line[2].strip('\n;')
+            if value == "-1" or value == 'True' or value == 'False':
+                content +=  variable + ": " + value + ";\n"
+            elif line[2].strip().isdigit(): 
+                content += variable + ": rgb" + short2rgb(value)+ ";\n"
+        
+        
+    file_scss.write(content)
+    file_scss.close()
+    file_python.close()
 
-#     file_scss.close()
-
-
-def scss_to_module(filename_css):  
-
-    file_scss = open(filename_css, 'r')
-    filename_python = filename_css.replace('scss', 'py')
+def scss_to_python(filename_scss):  
+    file_scss = open(filename_scss, 'r')
+    filename_python = filename_scss.replace('.scss', '-temp.py')
     file_python = open(filename_python, "w") 
 
     content = "# this is a powerline shell theme generated automatically from an .scss file.\n\n" \
@@ -52,5 +53,7 @@ def scss_to_module(filename_css):
         content += '\n'
         
     file_python.write(content)
+    file_python.close()
+    file_scss.close()
 
-    return filename_python # TODO rename
+    return filename_python
