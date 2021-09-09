@@ -5,6 +5,8 @@ from .colortrans import rgb2short, RGB2SHORT_DICT
 def short2rgb (shortstring):
     return str((list(RGB2SHORT_DICT.keys())[list(RGB2SHORT_DICT.values()).index(int(shortstring))]))
 
+# TODO add python to rgb python maybe?
+
 def python_to_scss(filename_python):
     file_python = open(filename_python, 'r')
     filename_scss = filename_python.replace('.py', '-generated.scss')
@@ -46,7 +48,7 @@ def scss_to_python(filename_scss):
             pass
         elif('rgb' in line[1]):
             r, g, b = eval((line[1] + line[2] + line[3]).strip('rgb;\n'))
-            content += '\t' + var_name + " = " + str(rgb2short(r, g, b))
+            content += '\t' + var_name + " = " + str((r, g, b))
         else:
             content += '\t' + var_name + " = " + line[1].strip(' ;:')
 

@@ -284,7 +284,7 @@ This will create an .scss file that you can then edit and add to your config fil
   "theme": "~/mythemes/my-great-theme.scss"
 ```
 
-Note that the SCSS converter converts the RGB values to the closest one of the 256 supported [colors](https://jonasjacek.github.io/colors/). 
+Note that if your terminal does not support TrueColor, the SCSS converter will convert the RGB values to the closest one of the 256 supported [colors](https://jonasjacek.github.io/colors/). 
 
 ### Segment Configuration
 

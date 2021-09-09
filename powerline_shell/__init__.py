@@ -3,6 +3,7 @@
 from __future__ import print_function
 import argparse
 import os
+from .colortrans import rgb2short
 import sys
 import importlib
 import json
@@ -96,6 +97,8 @@ class Powerline(object):
         self.separator = Powerline.symbols[mode]['separator']
         self.separator_thin = Powerline.symbols[mode]['separator_thin']
         self.segments = []
+        colorterm = os.getenv("COLORTERM")
+        self.truecolor = colorterm is not None and "truecolor" in colorterm
 
     def segment_conf(self, seg_name, key, default=None):
         return self.config.get(seg_name, {}).get(key, default)
@@ -105,6 +108,11 @@ class Powerline(object):
             return ''
         elif code == self.theme.RESET:
             return self.reset
+        elif isinstance(code, tuple):
+            if self.truecolor:
+                return self.color_template % ('[%s;2;%s;%s;%sm' % (prefix, *code))
+            else:
+                return self.color_template % ('[%s;5;%sm' % (prefix, rgb2short(*code)))
         else:
             return self.color_template % ('[%s;5;%sm' % (prefix, code))
 
