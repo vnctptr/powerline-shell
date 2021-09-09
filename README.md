@@ -269,6 +269,23 @@ that the colors you see may vary depending on your terminal. When designing a
 theme, please test your theme on multiple terminals, especially with default
 settings.
 
+
+#### SCSS Themes
+You can also save your theme as an .scss file and use your IDE's built-in color picker to change the colors. You can start by converting one of the existing themes to .scss using:
+
+```
+powerline-shell --convert-theme '~/mythemes/my-great-theme.py'
+```
+
+
+This will create an .scss file that you can then edit and add to your config file:
+
+```
+  "theme": "~/mythemes/my-great-theme.scss"
+```
+
+Note that the SCSS converter converts the RGB values to the closest one of the 256 supported [colors](https://jonasjacek.github.io/colors/). 
+
 ### Segment Configuration
 
 Some segments support additional configuration. The options for the segment are
